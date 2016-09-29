@@ -8,19 +8,21 @@
     <button id="btn" class="button" >submit</button>
     <div id="short_description"></div>
     <iframe src="" style="width:100%; height:1500px;" frameborder="0"></iframe>
-    <script src="http://code.jquery.com/jquery-1.11.0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch-jsonp/1.0.2/fetch-jsonp.js"></script>
 
     <script>
-      var url = 'http://octopart.com/api/v3/parts/e3f82af562923c3f?';
-      url += '&include[]=datasheets';
-      url += '&apikey=4b129134';
-      url += '&callback=?';
-    
-      $.getJSON(url, function(response){
-      var datasheets = response.datasheets
-      console.log(datasheets)
-      $("iframe").attr("src", datasheets[0].url)
-      });
+      const partId = 'e3f82af562923c3f'
+      const query = `?include[]=datasheets&include[]=short_description&apikey=4b129134&callback=?`;
+      const url = `http://octopart.com/api/v3/parts/${partId}${query}`
+
+      fetchJsonp(url).then(response => {
+        response.json().then(json => {
+          console.log(json)
+          document.querySelector('iframe').src = json.datasheets[0].url
+          document.querySelector('#short_description').innerText = json.short_description
+
+        })
+      })
     </script>
   </body>
 </html>
